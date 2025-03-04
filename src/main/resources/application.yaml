@@ -1,0 +1,38 @@
+spring:
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/springblog
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  batch:
+    job:
+      name: ${job.name:NONE}
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+
+
+logging:
+  level:
+    org.springframework.cache: trace
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
