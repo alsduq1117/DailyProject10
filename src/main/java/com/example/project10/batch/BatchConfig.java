@@ -3,6 +3,7 @@ package com.example.project10.batch;
 import com.example.project10.domain.Post;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -18,11 +19,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class BatchConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
+    private final ChunkStepExecutionListener chunkStepExecutionListener;
 
 
     @Bean
@@ -35,10 +38,11 @@ public class BatchConfig {
     @Bean
     public Step logPostsStep() {
         return new StepBuilder("logPostsStep", jobRepository)
-                .<Post, String>chunk(5, transactionManager)
+                .<Post, String>chunk(2, transactionManager)
                 .reader(postReader())
                 .processor(postProcessor())
                 .writer(postWriter())
+                .listener(chunkStepExecutionListener)
                 .build();
     }
 
